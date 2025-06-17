@@ -16,14 +16,22 @@
 
 ### Установка модулей:
 
-Нам понадобится всего один **модуль**:
+Нам понадобится всего два **модуля**:
 
 ```bash
 pip install psutil
 ```
 
-Данный модуль осуществляет работу с диском.
+```bash
+pip install plyer
+```
+
+Модуль ```psutil``` осуществляет работу с диском.
 Возможно его установка и не нужна так как может быть предустановлен в Python
+
+Модуль ```plyer``` создает сообщения и отправляет в центр уведомлений в ```Windows```.
+
+(ВНИМАНИЕ! Неизвестно как это будет работать на ```Linux```!)
 
 ### Код:
 
@@ -32,6 +40,7 @@ pip install psutil
 ```python
 import datetime # Работа с временем
 import psutil  # для работы с дисками
+import plyer # Для отправки сообщений в центр уведомлений
 ```
 
 Приступаем к созданию **функции** "```get_disk_usage```":
@@ -80,10 +89,12 @@ def write_to_log(disk_info): # disk_info будет ниже
 
 ```python
 def main():
-    disk_info = get_disk_usage() # disk_info это файл в который мы передаем значения из get_disk_usage()
+    disk_info = get_disk_usage()
+    plyer.notification.notify(message=f'Смотрите storage.log для подробностей', app_name='DiskAnalyzeTool', title='Проведен анализ!') # Отправка сообщения в центр уведомления Windows
     print('Была проведена диагностика. Смотрите файл "storage.log"')
-    write_to_log(disk_info) # Создаем файл логирования
-    input() # Нажми любую кнопку что бы выйти
+    print('Введите диск для диагностики:')
+    write_to_log(disk_info)
+    input()
 ```
 
 Осталась лишь **точка входа** в программу:
@@ -131,3 +142,5 @@ P.S:
 [Python](https://www.python.org/)
 
 [psutil](https://pypi.org/project/psutil/)
+
+[plyer](https://pypi.org/project/plyer/)

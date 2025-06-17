@@ -1,5 +1,6 @@
 import datetime
 import psutil  # для работы с дисками
+import plyer # Для отправки сообщений в центр уведомлений
 
 def get_disk_usage():
     # Получает информацию о диске C:
@@ -36,9 +37,9 @@ def write_to_log(disk_info):
 
 def main():
     disk_info = get_disk_usage()
+    plyer.notification.notify(message=f'Смотрите storage.log для подробностей', app_name='DiskAnalyzeTool', title='Проведен анализ!')
     print('Была проведена диагностика. Смотрите файл "storage.log"')
     write_to_log(disk_info)
-    input()
 
 if __name__ == "__main__":
     main()
