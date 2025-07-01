@@ -2,6 +2,9 @@ import datetime
 import psutil  # Для работы с дисками
 import tkinter as tk  # Используем Tkinter в качестве GUI-библиотеки
 from tkinter import ttk, messagebox
+import sys
+import os
+
 
 class DiskAnalyzerApp:  # Основной класс нашего приложения
     def __init__(self, root):  # Конструктор класса
@@ -10,18 +13,18 @@ class DiskAnalyzerApp:  # Основной класс нашего прилож�
         self.root.title("Disk Analyze Tool")  # Название для окна
         self.root.geometry("500x300")  # Размер окна
 
-        # # Установка иконки приложения
-        # try:
-        #     if getattr(sys, 'frozen', False):
-        #         # Если приложение 'заморожено' с помощью PyInstaller
-        #         application_path = sys._MEIPASS
-        #     else:
-        #         application_path = os.path.dirname(os.path.abspath(__file__))
+        # Установка иконки приложения
+        try:
+            if getattr(sys, 'frozen', False):
+                # Если приложение 'заморожено' с помощью PyInstaller
+                application_path = sys._MEIPASS
+            else:
+                application_path = os.path.dirname(os.path.abspath(__file__))
 
-        #     icon_path = os.path.join(application_path, 'disk_icon.ico')
-        #     self.root.iconbitmap(icon_path)
-        # except Exception as e:
-        #     print(f"Не удалось загрузить иконку: {e}")
+            icon_path = os.path.join(application_path, 'disk_icon.ico')
+            self.root.iconbitmap(icon_path)
+        except Exception as e:
+            pass
 
         self.setup_ui()  # Вызываем функцию-обёртку, которая будет 'красить' наше приложение (она будет ниже)
         # Автоматическое обновление информации при запуске
@@ -29,7 +32,7 @@ class DiskAnalyzerApp:  # Основной класс нашего прилож�
 
     def setup_ui(self):  # 'Функция обёртка'
         style = ttk.Style()  # Задаем стили
-        # Задаем стили для заднег фона
+        # Задаем стили для заднего фона
         style.configure('TFrame', background='#f0f0f0')
         style.configure('TLabel', background='#f0f0f0', font=(
             'Arial', 10))  # Задаем стили для заднего фона текста
@@ -75,6 +78,10 @@ class DiskAnalyzerApp:  # Основной класс нашего прилож�
             main_frame, text="Готово", relief=tk.SUNKEN)  # Статус бар
         self.status_bar.pack(fill=tk.X, pady=(10, 0))
 
+        self.rights_label = ttk.Label(
+            main_frame, text="CD-ROM SOFT", relief=None)  # Имя компании
+        self.rights_label.pack(fill=tk.X, pady=(20, 0), padx=(180, 0))
+
     def get_disk_usage(self):  # Получает информацию о диске C:
         try:  # Пробуем 'считать' диск C:
             # Переменная, в которую мы вызываем методом
@@ -100,7 +107,8 @@ class DiskAnalyzerApp:  # Основной класс нашего прилож�
                 text="Ошибка при получении информации о диске")
             return
 
-        total_gb = disk_info['total'] / (1024 ** 3) # Обновляем информацию на экране
+        # Обновляем информацию на экране
+        total_gb = disk_info['total'] / (1024 ** 3)
         used_gb = disk_info['used'] / (1024 ** 3)
         free_gb = disk_info['free'] / (1024 ** 3)
 
@@ -112,9 +120,10 @@ class DiskAnalyzerApp:  # Основной класс нашего прилож�
         self.disk_info_labels['percent'].config(
             text=f"Заполнено: {disk_info['percent']}%")
 
-        self.progress['value'] = disk_info['percent'] # Обновляем прогресс-бар
+        self.progress['value'] = disk_info['percent']  # Обновляем прогресс-бар
 
-        self.current_disk_info = disk_info # Сохраняем текущую информацию для использования в других методах
+        # Сохраняем текущую информацию для использования в других методах
+        self.current_disk_info = disk_info
         self.status_bar.config(
             text=f"Информация обновлена: {datetime.datetime.now().strftime('%H:%M:%S')}")
 
@@ -159,7 +168,7 @@ class DiskAnalyzerApp:  # Основной класс нашего прилож�
             self.status_bar.config(text="Ошибка при записи лога")
 
     def show_notification(self):  # Показываем информацию о проекте в виде уведомления
-        current_version = '2.0.0'  # ТЕКУЩАЯ ВЕРСИЯ ПРОЕКТА
+        current_version = '2.0.1'  # ТЕКУЩАЯ ВЕРСИЯ ПРОЕКТА
         info = f"Данная утлита поможет вам записывать состояние диска\nВерсия - {current_version}"
         # Показываем уведомление
         messagebox.showinfo("Информация о проекте", info)
